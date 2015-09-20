@@ -167,8 +167,8 @@ def powerInputHandler(evt) {
             	sendSms phoneUser6, message
             }            
         }  
-            
- sendPush("LAUNDRY TRIGGER!")
+ // For debugging - way too noisy           
+ // sendPush("LAUNDRY TRIGGER!")
 
 
 //        if (phone) {
