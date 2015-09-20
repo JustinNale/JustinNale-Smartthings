@@ -22,7 +22,7 @@ definition(
     namespace: "JustinNale",
     author: "Justin Nale",
     description: "This application is a (further) modification of the SmartThings Laundry Monitor SmartApp.  This allows for a janky user selection and instead of using a vibration sensor, this utilizes Power (Wattage) draw from an Aeon Smart Energy Meter.",
-    category: "Convenience",
+    category: "My Apps",
     iconUrl: "http://www.clker.com/cliparts/6/b/d/5/1207431803659474302laundry%20laundomat%20black.svg.med.png",
     iconX2Url: "http://www.clker.com/cliparts/6/b/d/5/1207431803659474302laundry%20laundomat%20black.svg.med.png"
     )
@@ -36,53 +36,53 @@ preferences {
     // Dryer def will go here
 
         section("User 1"){
-		input "myswitch-User1", "capability.switch"
-        input "name-User1", "text", title: "Name?"
-        input "phone-User1", "phone", title: "Send a text message?", required: false
+		input "myswitchUser1", "capability.switch"
+        input "nameUser1", "text", title: "Name?"
+        input "phoneUser1", "phone", title: "Send a text message?", required: false
 	}
     
-    	section("User 2"){
-		input "myswitch-User2", "capability.switch", required: false
-        input "name-User2", "text", title: "Name?", required: false
-        input "phone-User2", "phone", title: "Send a text message?", required: false
+    	section("User 2", hidden: true, hideable: true){
+		input "myswitchUser2", "capability.switch", required: false
+        input "nameUser2", "text", title: "Name?", required: false
+        input "phoneUser2", "phone", title: "Send a text message?", required: false
 	}
     
-    	section("User 3"){
-		input "myswitch-User3", "capability.switch", required: false
-        input "name-User3", "text", title: "Name?", required: false
-        input "phone-User3", "phone", title: "Send a text message?", required: false
+    	section("User 3", hidden: true, hideable: true){
+		input "myswitchUser3", "capability.switch", required: false
+        input "nameUser3", "text", title: "Name?", required: false
+        input "phoneUser3", "phone", title: "Send a text message?", required: false
 	}    
     
-    	section("User 4"){
-		input "myswitch-User4", "capability.switch", required: false
-        input "name-User4", "text", title: "Name?", required: false
-        input "phone-User4", "phone", title: "Send a text message?", required: false
+    	section("User 4", hidden: true, hideable: true){
+		input "myswitchUser4", "capability.switch", required: false
+        input "nameUser4", "text", title: "Name?", required: false
+        input "phoneUser4", "phone", title: "Send a text message?", required: false
 	}    
 
-    	section("User 5"){
-		input "myswitch-User5", "capability.switch", required: false
-        input "name-User5", "text", title: "Name?", required: false
-        input "phone-User5", "phone", title: "Send a text message?", required: false
+    	section("User 5", hidden: true, hideable: true){
+		input "myswitchUser5", "capability.switch", required: false
+        input "nameUser5", "text", title: "Name?", required: false
+        input "phoneUser5", "phone", title: "Send a text message?", required: false
 	}
     
-    	section("User 6"){
-		input "myswitch-User6", "capability.switch", required: false
-        input "name-User6", "text", title: "Name?", required: false
-        input "phone-User6", "phone", title: "Send a text message?", required: false
+    	section("User 6", hidden: true, hideable: true){
+		input "myswitchUser6", "capability.switch", required: false
+        input "nameUser6", "text", title: "Name?", required: false
+        input "phoneUser6", "phone", title: "Send a text message?", required: false
 	}    
-    }
     
-    section("OLD_Notifications") {
-		input "sendPushMessage", "bool", title: "Push Notifications?"
-		input "phone", "phone", title: "Send a text message?", required: false
-	}
+    
+    //section("OLD_Notifications") {
+	//	input "sendPushMessage", "bool", title: "Push Notifications?"
+	//	input "phone", "phone", title: "Send a text message?", required: false
+	//}
 
 	section("System Variables"){
     	//input "sendPushMessage", "bool", title: "Push Notifications?"
-    	input "minimumWattage", "decimal", title: "Minimum running wattage", required: false, defaultValue: 50
+    	input "minimumWattage", "decimal", title: "Minimum running wattage", required: false, defaultValue: 2
         //input "message", "text", title: "Notification message", description: "Washer is done!", required: true
 	}
-	
+	}
     // JN - I dont know what this is
 	//section ("Additionally", hidden: hideOptionsSection(), hideable: true) {
 	//    input "phone", "phone", title: "Send a text message to:", required: false
@@ -116,58 +116,59 @@ def powerInputHandler(evt) {
 		atomicState.startedAt = now()
         atomicState.stoppedAt = null
         log.trace "Cycle started."
-        sendpush "Cycle started."
+        sendNotificationEvent("Cycle started.")
+        sendpush("Cycle started.")
     } else if (atomicState.isRunning && latestPower < minimumWattage) {
     	atomicState.isRunning = false
         atomicState.stoppedAt = now()  
-        log.debug "startedAt: ${atomicState.startedAt}, stoppedAt: ${atomicState.stoppedAt}"                    
+        log.debug "startedAt: ${atomicState.startedAt}, stoppedAt: ${atomicState.stoppedAt}" 
+        sendNotificationEvent("Cycle finished.")
 
 
 
-		if (myswitch-User1){
-        	if (myswitch-User1.currentSwitch == "on"){
-            	def message = "${name-user1.value} - Your wash is done!"
-            	sendsms phone-User1, message
+		if (myswitchUser1){
+        	if (myswitchUser1.currentSwitch == "on"){
+            	def message = "${nameUser1} - Your wash is done!"
+            	sendSms phoneUser1, message
             }
 		}
         
-		if (myswitch-User2){
-        	if (myswitch-User2.currentSwitch == "on"){
-            	def message = "${name-user2.value} - Your wash is done!"
-            	sendsms phone-User2, message
+		if (myswitchUser2){
+        	if (myswitchUser2.currentSwitch == "on"){
+            	def message = "${nameUser2} - Your wash is done!"
+            	sendSms phoneUser2, message
             }
         } 
         
-		if (myswitch-User3){
-        	if (myswitch-User3.currentSwitch == "on"){
-            	def message = "${name-user3.value} - Your wash is done!"
-            	sendsms phone-User3, message
+		if (myswitchUser3){
+        	if (myswitchUser3.currentSwitch == "on"){
+            	def message = "${nameUser3} - Your wash is done!"
+            	sendSms phoneUser3, message
             }
         }
         
-		if (myswitch-User4){
-        	if (myswitch-User4.currentSwitch == "on"){
-            	def message = "${name-user4.value} - Your wash is done!"
-            	sendsms phone-User4, message
+		if (myswitchUser4){
+        	if (myswitchUser4.currentSwitch == "on"){
+            	def message = "${nameUser4} - Your wash is done!"
+            	sendSms phoneUser4, message
             }            
         }
         
-		if (myswitch-User5){
-        	if (myswitch-User5.currentSwitch == "on"){
-            	def message = "${name-user5.value} - Your wash is done!"
-            	sendsms phone-User5, message
+		if (myswitchUser5){
+        	if (myswitchUser5.currentSwitch == "on"){
+            	def message = "${nameUser5} - Your wash is done!"
+            	sendSms phoneUser5, message
             }            
         } 
         
-		if (myswitch-User6){
-        	if (myswitch-User6.currentSwitch == "on"){
-            	def message = "${name-user6.value} - Your wash is done!"
-            	sendsms phone-User6, message
+		if (myswitchUser6){
+        	if (myswitchUser6.currentSwitch == "on"){
+            	def message = "${nameUser6} - Your wash is done!"
+            	sendSms phoneUser6, message
             }            
         }  
             
- sendPush "LAUNDRY TRIGGER!"           
-            
+ sendPush("LAUNDRY TRIGGER!")
 
 
 //        if (phone) {
@@ -193,3 +194,16 @@ def powerInputHandler(evt) {
 //private hideOptionsSection() {
 //  (phone) ? false : true
 //}
+
+private hideUser3() {
+  (myswitchUser2) ? false : true
+}
+private hideUser4() {
+  (myswitchUser3) ? false : true
+}
+private hideUser5() {
+  (myswitchUser4) ? false : true
+}
+private hideUser6() {
+  (myswitchUser5) ? false : true
+}
